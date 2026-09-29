@@ -49,6 +49,10 @@ We will develop a android plugin. The plugin will do following things:-
    to flutter android package plugin. 
 
 
+   flutter create --org mni.siddique --template=plugin --platforms=android -a kotlin battery_state_android
+
+
+
 
 
 
