@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:voltify/main.dart';
+import 'package:voltify/app/main.dart';
 import 'package:voltify/screens/battery_threshold_alert_screen.dart';
 
 void main() {
-  testWidgets('Threshold alert screen renders correctly at launch',
-      (WidgetTester tester) async {
+  testWidgets('Threshold alert screen renders correctly at launch', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const VoltifyApp());
     await tester.pump();
 
@@ -20,13 +21,14 @@ void main() {
     );
   });
 
-  testWidgets('Dismiss button updates state or invokes onDismiss',
-      (WidgetTester tester) async {
+  testWidgets('Dismiss button updates state or invokes onDismiss', (
+    WidgetTester tester,
+  ) async {
     bool dismissedCalled = false;
 
     await tester.pumpWidget(
       MaterialApp(
-        home: BatteryThresholdAlertScreen(
+        home: SettingsScreen(
           batteryLevel: 85,
           thresholdLevel: 85,
           onDismiss: () {
@@ -46,14 +48,12 @@ void main() {
     expect(dismissedCalled, isTrue);
   });
 
-  testWidgets('Default dismiss shows confirmation view and allows reset',
-      (WidgetTester tester) async {
+  testWidgets('Default dismiss shows confirmation view and allows reset', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(
       const MaterialApp(
-        home: BatteryThresholdAlertScreen(
-          batteryLevel: 80,
-          thresholdLevel: 80,
-        ),
+        home: SettingsScreen(batteryLevel: 80, thresholdLevel: 80),
       ),
     );
     await tester.pump();
@@ -71,8 +71,9 @@ void main() {
     expect(find.text('Battery Threshold Reached'), findsOneWidget);
   });
 
-  testWidgets('Works cleanly in landscape mode without overflow',
-      (WidgetTester tester) async {
+  testWidgets('Works cleanly in landscape mode without overflow', (
+    WidgetTester tester,
+  ) async {
     // Set landscape screen dimensions (e.g. 844 x 390 - iPhone 14 landscape)
     tester.view.physicalSize = const Size(844, 390);
     tester.view.devicePixelRatio = 1.0;
@@ -81,10 +82,7 @@ void main() {
 
     await tester.pumpWidget(
       const MaterialApp(
-        home: BatteryThresholdAlertScreen(
-          batteryLevel: 90,
-          thresholdLevel: 90,
-        ),
+        home: SettingsScreen(batteryLevel: 90, thresholdLevel: 90),
       ),
     );
     await tester.pump();
@@ -94,8 +92,9 @@ void main() {
     expect(find.text('Dismiss Alert'), findsOneWidget);
   });
 
-  testWidgets('Works cleanly on compact screen (iPhone SE / small Android)',
-      (WidgetTester tester) async {
+  testWidgets('Works cleanly on compact screen (iPhone SE / small Android)', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(320, 568);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -103,10 +102,7 @@ void main() {
 
     await tester.pumpWidget(
       const MaterialApp(
-        home: BatteryThresholdAlertScreen(
-          batteryLevel: 80,
-          thresholdLevel: 80,
-        ),
+        home: SettingsScreen(batteryLevel: 80, thresholdLevel: 80),
       ),
     );
     await tester.pump();

@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 
-/// A polished, production-ready alert screen displayed when the device reaches
-/// its configured battery charge threshold.
-///
-/// Designed to be urgent yet elegant, prompting the user to unplug the charger.
-/// Supports both portrait and landscape layouts and adapts smoothly across
-/// various phone and tablet screen dimensions without any overflow.
-class BatteryThresholdAlertScreen extends StatefulWidget {
-  /// The current battery level (0 - 100). Defaults to 80 for UI prototype.
+class SettingsScreen extends StatefulWidget {
   final int batteryLevel;
 
-  /// The configured battery threshold (0 - 100). Defaults to 80 for UI prototype.
   final int thresholdLevel;
 
-  /// Optional callback invoked when the user taps the Dismiss button.
   final VoidCallback? onDismiss;
 
-  const BatteryThresholdAlertScreen({
+  const SettingsScreen({
     super.key,
     this.batteryLevel = 80,
     this.thresholdLevel = 80,
@@ -24,11 +15,10 @@ class BatteryThresholdAlertScreen extends StatefulWidget {
   });
 
   @override
-  State<BatteryThresholdAlertScreen> createState() =>
-      _BatteryThresholdAlertScreenState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScreen>
+class _SettingsScreenState extends State<SettingsScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
@@ -81,7 +71,6 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    // Elegant high-urgency palette
     const bgDark = Color(0xFF0C1017);
     const bgCard = Color(0xFF161E2E);
     const emeraldPrimary = Color(0xFF10B981);
@@ -149,12 +138,10 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Top Pill Badge
         _buildStatusBadge(amberAccent),
 
         SizedBox(height: isCompactHeight ? 10 : 16),
 
-        // Central Hero Battery Dial with Pulsing Glow
         _buildHeroGauge(
           emeraldPrimary,
           amberAccent,
@@ -163,22 +150,18 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
 
         SizedBox(height: isCompactHeight ? 12 : 20),
 
-        // Textual Alert Headers & Instructions
         _buildTextContent(emeraldPrimary, textMuted),
 
         SizedBox(height: isCompactHeight ? 12 : 20),
 
-        // Stat Chips: Current Level & Threshold
         _buildInfoChips(bgCard, emeraldPrimary, amberAccent, textMuted),
 
         SizedBox(height: isCompactHeight ? 12 : 20),
 
-        // Urgent Action Banner
         _buildActionBanner(amberAccent),
 
         SizedBox(height: isCompactHeight ? 16 : 24),
 
-        // Primary Dismiss Button
         _buildDismissButton(emeraldPrimary),
       ],
     );
@@ -195,7 +178,6 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Left Column: Central Hero Gauge
         Expanded(
           flex: 5,
           child: Center(
@@ -208,7 +190,7 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
           ),
         ),
         const SizedBox(width: 20),
-        // Right Column: Details, Stats, and Action
+
         Expanded(
           flex: 6,
           child: Column(
@@ -248,11 +230,7 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.warning_amber_rounded,
-            color: amberAccent,
-            size: 18,
-          ),
+          Icon(Icons.warning_amber_rounded, color: amberAccent, size: 18),
           const SizedBox(width: 8),
           Flexible(
             child: Text(
@@ -286,7 +264,6 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Outer Pulsing Glow Halo
               Container(
                 width: size + 20,
                 height: size + 20,
@@ -294,12 +271,16 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: emeraldPrimary.withValues(alpha: _glowAnimation.value * 0.4),
+                      color: emeraldPrimary.withValues(
+                        alpha: _glowAnimation.value * 0.4,
+                      ),
                       blurRadius: 36,
                       spreadRadius: 6,
                     ),
                     BoxShadow(
-                      color: amberAccent.withValues(alpha: _glowAnimation.value * 0.22),
+                      color: amberAccent.withValues(
+                        alpha: _glowAnimation.value * 0.22,
+                      ),
                       blurRadius: 18,
                       spreadRadius: 2,
                     ),
@@ -307,7 +288,6 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
                 ),
               ),
 
-              // Circular Track Ring
               SizedBox(
                 width: size,
                 height: size,
@@ -320,7 +300,6 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
                 ),
               ),
 
-              // Inner Content: Icon, Percentage, Subtitle
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -381,8 +360,9 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
     bool alignLeft = false,
   }) {
     return Column(
-      crossAxisAlignment:
-          alignLeft ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: alignLeft
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       children: [
         Text(
           'Battery Threshold Reached',
@@ -456,10 +436,7 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
       decoration: BoxDecoration(
         color: bgCard,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFF263348),
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFF263348), width: 1),
       ),
       child: Row(
         children: [
@@ -511,18 +488,11 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
       decoration: BoxDecoration(
         color: amberAccent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: amberAccent.withValues(alpha: 0.3),
-          width: 1,
-        ),
+        border: Border.all(color: amberAccent.withValues(alpha: 0.3), width: 1),
       ),
       child: Row(
         children: [
-          Icon(
-            Icons.power_off_rounded,
-            color: amberAccent,
-            size: 22,
-          ),
+          Icon(Icons.power_off_rounded, color: amberAccent, size: 22),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -583,10 +553,7 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
           decoration: BoxDecoration(
             color: bgCard,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: const Color(0xFF263348),
-              width: 1,
-            ),
+            border: Border.all(color: const Color(0xFF263348), width: 1),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -616,11 +583,7 @@ class _BatteryThresholdAlertScreenState extends State<BatteryThresholdAlertScree
               Text(
                 'Remember to disconnect your charger to avoid unnecessary wear on your battery.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: textMuted,
-                  fontSize: 14,
-                  height: 1.4,
-                ),
+                style: TextStyle(color: textMuted, fontSize: 14, height: 1.4),
               ),
               const SizedBox(height: 24),
               OutlinedButton.icon(

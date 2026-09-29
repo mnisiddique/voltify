@@ -35,10 +35,7 @@ class VoltifyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const BatteryThresholdAlertScreen(
-        batteryLevel: 80,
-        thresholdLevel: 80,
-      ),
+      home: const SettingsScreen(batteryLevel: 80, thresholdLevel: 80),
     );
   }
 }
