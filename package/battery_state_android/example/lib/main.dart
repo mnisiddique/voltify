@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _batteryStateAndroidPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          (await _batteryStateAndroidPlugin.getSettings()) as String;
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }

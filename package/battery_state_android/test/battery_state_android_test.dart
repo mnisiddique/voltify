@@ -1,3 +1,4 @@
+import 'package:battery_state_android/settings.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:battery_state_android/battery_state_android.dart';
 import 'package:battery_state_android/battery_state_android_platform_interface.dart';
@@ -8,7 +9,16 @@ class MockBatteryStateAndroidPlatform
     with MockPlatformInterfaceMixin
     implements BatteryStateAndroidPlatform {
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<Settings> getSettings() {
+    // TODO: implement getSettings
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> observeBatteryState(Settings settings) {
+    // TODO: implement observeBatteryState
+    throw UnimplementedError();
+  }
 }
 
 void main() {
@@ -18,11 +28,11 @@ void main() {
     expect(initialPlatform, isInstanceOf<MethodChannelBatteryStateAndroid>());
   });
 
-  test('getPlatformVersion', () async {
+  test('getSettings', () async {
     BatteryStateAndroid batteryStateAndroidPlugin = BatteryStateAndroid();
     MockBatteryStateAndroidPlatform fakePlatform = MockBatteryStateAndroidPlatform();
     BatteryStateAndroidPlatform.instance = fakePlatform;
 
-    expect(await batteryStateAndroidPlugin.getPlatformVersion(), '42');
+    expect(await batteryStateAndroidPlugin.getSettings(), isA<Settings>());
   });
 }

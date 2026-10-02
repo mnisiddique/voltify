@@ -25,10 +25,18 @@ class BatteryStateAndroidPlugin :
         call: MethodCall,
         result: Result
     ) {
-        if (call.method == "getPlatformVersion") {
-            result.success("Android ${android.os.Build.VERSION.RELEASE}")
-        } else {
-            result.notImplemented()
+        when (call.method) {
+            Method.OBSERVE_BATTERY_STATE -> {
+                val argumentMap = call.arguments as? Map<*, *>
+            }
+
+            Method.GET_SETTINGS -> {
+                result.success("Android ${android.os.Build.VERSION.RELEASE}")
+            }
+
+            else -> {
+                result.notImplemented()
+            }
         }
     }
 

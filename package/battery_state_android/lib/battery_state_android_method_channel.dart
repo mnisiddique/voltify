@@ -1,3 +1,4 @@
+import 'package:battery_state_android/settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -10,10 +11,12 @@ class MethodChannelBatteryStateAndroid extends BatteryStateAndroidPlatform {
   final methodChannel = const MethodChannel('battery_state_android');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>(
-      'getPlatformVersion',
-    );
-    return version;
+  Future<void> observeBatteryState(Settings settings) async {
+    methodChannel.invokeMethod('observeBatteryState', settings.toMap());
+  }
+  @override
+  Future<Settings> getSettings() async {
+    final settingsMap = await methodChannel.invokeMethod('getSettings');
+    return Settings.fromMap(settingsMap);
   }
 }

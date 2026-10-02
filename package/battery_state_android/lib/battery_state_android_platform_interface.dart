@@ -1,3 +1,4 @@
+import 'package:battery_state_android/settings.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'battery_state_android_method_channel.dart';
@@ -8,7 +9,8 @@ abstract class BatteryStateAndroidPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static BatteryStateAndroidPlatform _instance = MethodChannelBatteryStateAndroid();
+  static BatteryStateAndroidPlatform _instance =
+      MethodChannelBatteryStateAndroid();
 
   /// The default instance of [BatteryStateAndroidPlatform] to use.
   ///
@@ -23,7 +25,6 @@ abstract class BatteryStateAndroidPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
+  Future<void> observeBatteryState(Settings settings);
+  Future<Settings> getSettings();
 }
