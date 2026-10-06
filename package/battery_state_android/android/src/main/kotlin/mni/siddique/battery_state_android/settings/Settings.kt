@@ -1,4 +1,4 @@
-package mni.siddique.battery_state_android
+package mni.siddique.battery_state_android.settings
 
 import android.annotation.SuppressLint
 import kotlinx.serialization.Serializable

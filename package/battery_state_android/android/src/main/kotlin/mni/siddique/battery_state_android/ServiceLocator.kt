@@ -1,6 +1,8 @@
 package mni.siddique.battery_state_android
 
 import android.content.Context
+import mni.siddique.battery_state_android.settings.SettingsRepo
+import mni.siddique.battery_state_android.settings.dataStore
 
 object ServiceLocator {
 
