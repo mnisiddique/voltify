@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class Settings {
   final int threshold;
   final String speech;
@@ -13,7 +15,8 @@ class Settings {
     required this.isAlertOn,
   });
 
-  factory Settings.fromMap(Map<String, dynamic> json) {
+  factory Settings.fromJson(String jsonString) {
+    final json = jsonDecode(jsonString);
     return Settings(
       threshold: json['threshold'] as int,
       speech: json['speech'] as String,
@@ -21,6 +24,10 @@ class Settings {
       delay: json['delay'] as int,
       isAlertOn: json['isAlertOn'] as bool,
     );
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
   }
 
   Map<String, dynamic> toMap() {

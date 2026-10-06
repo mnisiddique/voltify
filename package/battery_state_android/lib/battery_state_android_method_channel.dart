@@ -14,9 +14,11 @@ class MethodChannelBatteryStateAndroid extends BatteryStateAndroidPlatform {
   Future<void> observeBatteryState(Settings settings) async {
     methodChannel.invokeMethod('observeBatteryState', settings.toMap());
   }
+
   @override
   Future<Settings> getSettings() async {
-    final settingsMap = await methodChannel.invokeMethod('getSettings');
-    return Settings.fromMap(settingsMap);
+    final settingsString = await methodChannel.invokeMethod('getSettings');
+    return Settings.fromJson(settingsString);
   }
 }
+  

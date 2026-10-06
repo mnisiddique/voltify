@@ -1,11 +1,11 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:battery_state_android/battery_state_android_method_channel.dart';
+// import 'package:battery_state_android/battery_state_android_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelBatteryStateAndroid platform = MethodChannelBatteryStateAndroid();
+  // MethodChannelBatteryStateAndroid platform = MethodChannelBatteryStateAndroid();
   const MethodChannel channel = MethodChannel('battery_state_android');
 
   setUp(() {
