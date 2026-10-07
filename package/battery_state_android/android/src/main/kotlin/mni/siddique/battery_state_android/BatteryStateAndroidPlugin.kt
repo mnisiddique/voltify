@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import mni.siddique.battery_state_android.settings.SettingsRepo
+import mni.siddique.battery_state_android.settings.SettingsSrc
 
 /** BatteryStateAndroidPlugin */
 class BatteryStateAndroidPlugin :
@@ -20,13 +20,13 @@ class BatteryStateAndroidPlugin :
     // This local reference serves to register the plugin with the Flutter Engine and unregister it
     // when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
-    private lateinit var settingsRepo: SettingsRepo
+    private lateinit var settingsSrc: SettingsSrc
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "battery_state_android")
         channel.setMethodCallHandler(this)
-        settingsRepo = ServiceLocator.getSettingsRepo(flutterPluginBinding.applicationContext)
+        settingsSrc = ServiceLocator.getSettingsRepo(flutterPluginBinding.applicationContext)
     }
 
     override fun onMethodCall(
@@ -37,13 +37,13 @@ class BatteryStateAndroidPlugin :
             Method.OBSERVE_BATTERY_STATE -> {
                 val settingsString = call.arguments as String
                 scope.launch {
-                    settingsRepo.saveSettings(settingsString)
+                    settingsSrc.saveSettings(settingsString)
                 }
             }
 
             Method.GET_SETTINGS -> {
                 scope.launch {
-                    result.success(settingsRepo.getSettings().toJson())
+                    result.success(settingsSrc.getSettings().toJson())
                 }
             }
 

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.first
 
 internal val Context.dataStore by preferencesDataStore(name = "battery_state_android_prefs")
 
-class SettingsRepo(private val datastore: DataStore<Preferences>) {
+class SettingsSrc(private val datastore: DataStore<Preferences>) {
 
     private var cacheSettings: Settings? = null
 
