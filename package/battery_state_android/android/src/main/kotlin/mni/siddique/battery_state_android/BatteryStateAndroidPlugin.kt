@@ -57,3 +57,28 @@ class BatteryStateAndroidPlugin :
         channel.setMethodCallHandler(null)
     }
 }
+
+
+/*
+* ObserveBatteryState
+*   parse settings from flutter
+*   if alert is on
+*      enqueue work manager to get notified when charger plugged in
+*
+*   on charger plugged in
+*      start foreground service
+*      service will throw notification
+*      if threshold reached
+*         stop service
+*         throw alarm notification
+*
+*    ObserveBatteryState
+*       registerPowerConnectionEvent
+*         - enqueWorkManager
+*
+*    Tasks
+*      - WorkManagerInitializer -> will enqueue work manager
+*      - ServiceInitializer -> will start service
+*      - NotificationInitializer -> will start notification
+*
+* */
