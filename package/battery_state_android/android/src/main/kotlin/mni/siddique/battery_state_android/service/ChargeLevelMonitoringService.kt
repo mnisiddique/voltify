@@ -20,11 +20,9 @@ import mni.siddique.battery_state_android.usecase.ChargeLevelObserver
 import mni.siddique.battery_state_android.usecase.ChargeState
 
 class ChargeLevelMonitoringService(
-    private val chargeLevelReceiver: ChargeLevelReceiver,
-    private val chargeLevelObserver: ChargeLevelObserver,
+    private val chargeLevelReceiver: ChargeLevelReceiver = ServiceLocator.getChargeLevelReceiver(),
+    private val chargeLevelObserver: ChargeLevelObserver = ServiceLocator.getChargeLevelObserver(),
 ) : Service() {
-
-    constructor(): this(chargeLevelReceiver = ServiceLocator.getChargeLevelReceiver(this),)
 
     private val serviceScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 

@@ -26,7 +26,8 @@ class BatteryStateAndroidPlugin :
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "battery_state_android")
         channel.setMethodCallHandler(this)
-        settingsSrc = ServiceLocator.getSettingsRepo(flutterPluginBinding.applicationContext)
+        ServiceLocator.init(flutterPluginBinding.applicationContext)
+        settingsSrc = ServiceLocator.getSettingsRepo()
     }
 
     override fun onMethodCall(
@@ -55,6 +56,7 @@ class BatteryStateAndroidPlugin :
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
+        ServiceLocator.clear()
     }
 }
 
