@@ -13,6 +13,8 @@ class BatteryStatePluginImpl(
         settingsSrc.saveSettings(settingsString)
         if(settings.isAlertOn){
             queue.enqueueChargeLevelMonitoring()
+        } else {
+            queue.cancelChargeLevelMonitoring()
         }
     }
 

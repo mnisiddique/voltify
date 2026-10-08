@@ -5,6 +5,9 @@ import mni.siddique.battery_state_android.service.ChargeLevelReceiver
 import mni.siddique.battery_state_android.settings.SettingsSrc
 import mni.siddique.battery_state_android.settings.dataStore
 import mni.siddique.battery_state_android.usecase.ChargeLevelObserver
+import mni.siddique.battery_state_android.workmanager.ChargeLevelMonitoringQueue
+import mni.siddique.battery_state_android.workmanager.ChargeLevelMonitoringQueueImpl
+import androidx.work.WorkManager
 
 object ServiceLocator {
 
@@ -26,6 +29,13 @@ object ServiceLocator {
                 settingsSrc = it
             }
         }
+    }
+
+    fun getChargeLevelMonitoringQueue(): ChargeLevelMonitoringQueue {
+        val appContext = checkNotNull(appContext) {
+            "ServiceLocator has not been initialized"
+        }
+        return ChargeLevelMonitoringQueueImpl(WorkManager.getInstance(appContext))
     }
 
     fun getChargeLevelReceiver(): ChargeLevelReceiver {

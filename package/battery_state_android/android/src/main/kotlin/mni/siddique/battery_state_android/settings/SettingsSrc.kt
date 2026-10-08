@@ -13,6 +13,7 @@ internal val Context.dataStore by preferencesDataStore(name = "battery_state_and
 
 class SettingsSrc(private val datastore: DataStore<Preferences>) {
 
+    @Volatile
     private var cacheSettings: Settings? = null
 
     companion object {
@@ -27,7 +28,13 @@ class SettingsSrc(private val datastore: DataStore<Preferences>) {
     }
 
     suspend fun getSettings(): Settings {
-        val settingsJson = datastore.data.first()[SETTINGS_JSON_KEY]
-        return cacheSettings ?: settingsJson?.let { Settings.fromJson(it) } ?: defaultSettings
+        return cacheSettings ?: datastore.data.first()[SETTINGS_JSON_KEY]?.let {
+            cacheSettings = Settings.fromJson(it)
+            cacheSettings
+        } ?: defaultSettings
     }
+
+    // Non-suspending read for callers that must not yield (e.g. per-broadcast handling).
+    // Only accurate once getSettings() or saveSettings() has populated the cache.
+    fun cachedSettings(): Settings = cacheSettings ?: defaultSettings
 }

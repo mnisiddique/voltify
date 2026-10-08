@@ -1,8 +1,12 @@
 package mni.siddique.battery_state_android.workmanager
 
 import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import mni.siddique.battery_state_android.ServiceLocator
+import mni.siddique.battery_state_android.service.ChargeLevelMonitoringService
 
 class ChargeLevelMonitoringWorker(
     appContext: Context,
@@ -10,9 +14,9 @@ class ChargeLevelMonitoringWorker(
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
-//        val serviceIntent = Intent(applicationContext, BatteryMonitorService::class.java)
-//        ContextCompat.startForegroundService(applicationContext, serviceIntent)
-//        return Result.success()
-        TODO("Not yet implemented")
+        ServiceLocator.init(applicationContext)
+        val serviceIntent = Intent(applicationContext, ChargeLevelMonitoringService::class.java)
+        ContextCompat.startForegroundService(applicationContext, serviceIntent)
+        return Result.success()
     }
 }
