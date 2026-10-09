@@ -9,6 +9,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import mni.siddique.battery_state_android.delegate.PluginDelegate
+import mni.siddique.battery_state_android.delegate.PluginReply
 import mni.siddique.battery_state_android.settings.SettingsSrc
 
 /** BatteryStateAndroidPlugin */
@@ -21,6 +23,7 @@ class BatteryStateAndroidPlugin :
     // when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var settingsSrc: SettingsSrc
+    private lateinit var pluginDelegate: PluginDelegate
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -28,28 +31,18 @@ class BatteryStateAndroidPlugin :
         channel.setMethodCallHandler(this)
         ServiceLocator.init(flutterPluginBinding.applicationContext)
         settingsSrc = ServiceLocator.getSettingsRepo()
+        pluginDelegate = ServiceLocator.getPluginDelegate()
     }
 
     override fun onMethodCall(
         call: MethodCall,
         result: Result
     ) {
-        when (call.method) {
-            Method.OBSERVE_BATTERY_STATE -> {
-                val settingsString = call.arguments as String
-                scope.launch {
-                    settingsSrc.saveSettings(settingsString)
-                }
-            }
-
-            Method.GET_SETTINGS -> {
-                scope.launch {
-                    result.success(settingsSrc.getSettings().toJson())
-                }
-            }
-
-            else -> {
-                result.notImplemented()
+        scope.launch {
+            when (val reply = pluginDelegate.call(call.method, call.arguments.toString())) {
+                is PluginReply.Success -> result.success(reply.value)
+                is PluginReply.Error -> result.error(reply.code, reply.message, null)
+                is PluginReply.NotImplemented -> result.notImplemented()
             }
         }
     }

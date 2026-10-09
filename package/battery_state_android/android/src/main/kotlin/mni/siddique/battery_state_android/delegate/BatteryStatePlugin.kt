@@ -1,4 +1,4 @@
-package mni.siddique.battery_state_android.plugin
+package mni.siddique.battery_state_android.delegate
 
 import mni.siddique.battery_state_android.settings.Settings
 

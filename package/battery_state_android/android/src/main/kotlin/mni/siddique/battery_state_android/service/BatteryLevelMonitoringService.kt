@@ -20,13 +20,13 @@ import mni.siddique.battery_state_android.StringResource
 import mni.siddique.battery_state_android.settings.SettingsSrc
 import mni.siddique.battery_state_android.usecase.ChargeLevelObserver
 import mni.siddique.battery_state_android.usecase.ChargeState
-import mni.siddique.battery_state_android.workmanager.ChargeLevelMonitoringQueue
+import mni.siddique.battery_state_android.workmanager.BatteryLevelMonitoringTriggerEnqueuer
 
-class ChargeLevelMonitoringService(
+class BatteryLevelMonitoringService(
     private val chargeLevelReceiver: ChargeLevelReceiver = ServiceLocator.getChargeLevelReceiver(),
     private val chargeLevelObserver: ChargeLevelObserver = ServiceLocator.getChargeLevelObserver(),
     private val settingsSrc: SettingsSrc = ServiceLocator.getSettingsRepo(),
-    private val monitoringQueue: ChargeLevelMonitoringQueue = ServiceLocator.getChargeLevelMonitoringQueue(),
+    private val monitoringQueue: BatteryLevelMonitoringTriggerEnqueuer = ServiceLocator.getChargeLevelMonitoringQueue(),
 ) : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
