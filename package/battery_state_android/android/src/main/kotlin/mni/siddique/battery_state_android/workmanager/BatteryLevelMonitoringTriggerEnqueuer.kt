@@ -2,7 +2,7 @@ package mni.siddique.battery_state_android.workmanager
 
 interface BatteryLevelMonitoringTriggerEnqueuer {
     fun enqueueTrigger()
-    fun cancelChargeLevelMonitoring()
+    fun dequeueTrigger()
 }
 /*
 * BatteryLevelMonitoringQueue

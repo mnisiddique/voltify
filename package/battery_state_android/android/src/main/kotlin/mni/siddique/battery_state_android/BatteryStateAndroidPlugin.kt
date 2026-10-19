@@ -9,8 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import mni.siddique.battery_state_android.delegate.PluginDelegate
-import mni.siddique.battery_state_android.delegate.PluginReply
+import mni.siddique.battery_state_android.settings.Settings
 import mni.siddique.battery_state_android.settings.SettingsSrc
 
 /** BatteryStateAndroidPlugin */
@@ -23,26 +22,38 @@ class BatteryStateAndroidPlugin :
     // when the Flutter Engine is detached from the Activity
     private lateinit var channel: MethodChannel
     private lateinit var settingsSrc: SettingsSrc
-    private lateinit var pluginDelegate: PluginDelegate
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
     override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "battery_state_android")
         channel.setMethodCallHandler(this)
         ServiceLocator.init(flutterPluginBinding.applicationContext)
-        settingsSrc = ServiceLocator.getSettingsRepo()
-        pluginDelegate = ServiceLocator.getPluginDelegate()
     }
 
     override fun onMethodCall(
         call: MethodCall,
         result: Result
     ) {
-        scope.launch {
-            when (val reply = pluginDelegate.call(call.method, call.arguments.toString())) {
-                is PluginReply.Success -> result.success(reply.value)
-                is PluginReply.Error -> result.error(reply.code, reply.message, null)
-                is PluginReply.NotImplemented -> result.notImplemented()
+        val settingsSrc = ServiceLocator.getSettingsSrc()
+        when (call.method) {
+            Method.GET_SETTINGS -> {
+                scope.launch {
+                    settingsSrc.preWarmCache()
+                    result.success(settingsSrc.getSettings().toJson())
+                }
+            }
+
+            Method.OBSERVE_BATTERY_STATE -> {
+                scope.launch {
+                    settingsSrc.saveSettings(call.arguments as String)
+                    val enqueuer = ServiceLocator.getBatteryLevelMonitoringTriggerEnqueuer()
+                    enqueuer.enqueueTrigger()
+                    result.success(null)
+                }
+            }
+
+            else -> {
+                result.notImplemented()
             }
         }
     }

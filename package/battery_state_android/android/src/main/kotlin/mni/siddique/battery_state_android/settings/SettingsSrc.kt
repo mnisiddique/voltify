@@ -27,14 +27,14 @@ class SettingsSrc(private val datastore: DataStore<Preferences>) {
         }
     }
 
-    suspend fun getSettings(): Settings {
-        return cacheSettings ?: datastore.data.first()[SETTINGS_JSON_KEY]?.let {
+    suspend fun preWarmCache() {
+        cacheSettings = datastore.data.first()[SETTINGS_JSON_KEY]?.let {
             cacheSettings = Settings.fromJson(it)
             cacheSettings
         } ?: defaultSettings
     }
 
-    // Non-suspending read for callers that must not yield (e.g. per-broadcast handling).
-    // Only accurate once getSettings() or saveSettings() has populated the cache.
-    fun cachedSettings(): Settings = cacheSettings ?: defaultSettings
+    fun getSettings(): Settings {
+        return cacheSettings ?: throw IllegalStateException("Settings cache not initialized")
+    }
 }

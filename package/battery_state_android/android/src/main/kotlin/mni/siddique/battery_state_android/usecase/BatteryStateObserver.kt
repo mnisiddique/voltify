@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import mni.siddique.battery_state_android.settings.SettingsSrc
 
-class ChargeLevelObserver(private val settingsSrc: SettingsSrc) {
+class BatteryStateObserver(private val settingsSrc: SettingsSrc) {
     // Events, not state: no replay, so a new collector never sees a previous session's
     // Disconnected/ThresholdReached.
     private val _chargeState = MutableSharedFlow<ChargeState>(
@@ -29,7 +29,7 @@ class ChargeLevelObserver(private val settingsSrc: SettingsSrc) {
         val state = when (event) {
             SystemEvent.BATTERY_CHANGED -> {
                 val percent = (chargeLevel * 100) / chargeScale
-                val setting = settingsSrc.cachedSettings()
+                val setting = settingsSrc.getSettings()
                 if (percent >= setting.threshold) ChargeState.ThresholdReached(setting)
                 else ChargeState.Charging
             }

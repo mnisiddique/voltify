@@ -18,15 +18,15 @@ import kotlinx.coroutines.launch
 import mni.siddique.battery_state_android.ServiceLocator
 import mni.siddique.battery_state_android.StringResource
 import mni.siddique.battery_state_android.settings.SettingsSrc
-import mni.siddique.battery_state_android.usecase.ChargeLevelObserver
+import mni.siddique.battery_state_android.usecase.BatteryStateObserver
 import mni.siddique.battery_state_android.usecase.ChargeState
 import mni.siddique.battery_state_android.workmanager.BatteryLevelMonitoringTriggerEnqueuer
 
 class BatteryLevelMonitoringService(
-    private val chargeLevelReceiver: ChargeLevelReceiver = ServiceLocator.getChargeLevelReceiver(),
-    private val chargeLevelObserver: ChargeLevelObserver = ServiceLocator.getChargeLevelObserver(),
-    private val settingsSrc: SettingsSrc = ServiceLocator.getSettingsRepo(),
-    private val monitoringQueue: BatteryLevelMonitoringTriggerEnqueuer = ServiceLocator.getChargeLevelMonitoringQueue(),
+    private val batteryStateReceiver: BatteryStateReceiver = ServiceLocator.getBatteryStateReceiver(),
+    private val batteryStateObserver: BatteryStateObserver = ServiceLocator.getBatteryStateObserver(),
+    private val settingsSrc: SettingsSrc = ServiceLocator.getSettingsSrc(),
+    private val monitoringQueue: BatteryLevelMonitoringTriggerEnqueuer = ServiceLocator.getBatteryLevelMonitoringTriggerEnqueuer(),
 ) : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
@@ -44,19 +44,16 @@ class BatteryLevelMonitoringService(
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        chargeLevelObserver.reset()
+        batteryStateObserver.reset()
         serviceScope.launch {
-            chargeLevelObserver.chargeState.collect { state ->
+            batteryStateObserver.chargeState.collect { state ->
                 when (state) {
                     is ChargeState.ThresholdReached -> {
                         // TODO: launch full screen intent to launch alarm activity
                     }
-
                     is ChargeState.Disconnected -> {
                         // Wait for the next charge cycle, if the user still wants monitoring.
-                        if (settingsSrc.cachedSettings().isAlertOn) {
-                            monitoringQueue.enqueueChargeLevelMonitoring()
-                        }
+                        monitoringQueue.enqueueTrigger()
                         stopSelf()
                     }
 
@@ -68,7 +65,7 @@ class BatteryLevelMonitoringService(
 
     override fun onDestroy() {
         if (receiverRegistered) {
-            unregisterReceiver(chargeLevelReceiver)
+            unregisterReceiver(batteryStateReceiver)
             receiverRegistered = false
         }
         serviceScope.cancel()
@@ -94,7 +91,7 @@ class BatteryLevelMonitoringService(
             addAction(Intent.ACTION_BATTERY_CHANGED)
             addAction(Intent.ACTION_POWER_DISCONNECTED)
         }
-        registerReceiver(chargeLevelReceiver, filter)
+        registerReceiver(batteryStateReceiver, filter)
     }
 
     private fun createNotificationChannel() {
