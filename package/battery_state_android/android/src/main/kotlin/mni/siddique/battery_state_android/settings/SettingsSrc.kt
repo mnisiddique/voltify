@@ -29,8 +29,7 @@ class SettingsSrc(private val datastore: DataStore<Preferences>) {
 
     suspend fun preWarmCache() {
         cacheSettings = datastore.data.first()[SETTINGS_JSON_KEY]?.let {
-            cacheSettings = Settings.fromJson(it)
-            cacheSettings
+            Settings.fromJson(it)
         } ?: defaultSettings
     }
 
