@@ -17,16 +17,15 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mni.siddique.battery_state_android.ServiceLocator
 import mni.siddique.battery_state_android.StringResource
-import mni.siddique.battery_state_android.settings.SettingsSrc
-import mni.siddique.battery_state_android.usecase.BatteryStateObserver
-import mni.siddique.battery_state_android.usecase.ChargeState
-import mni.siddique.battery_state_android.workmanager.BatteryLevelMonitoringTriggerEnqueuer
+import mni.siddique.battery_state_android.usecase.batterystate.BatteryStateObserver
+import mni.siddique.battery_state_android.usecase.batterystate.ChargeState
+import mni.siddique.battery_state_android.workmanager.PowerConnectionSchedule
 
 class BatteryLevelMonitoringService(
     private val batteryStateReceiver: BatteryStateReceiver = ServiceLocator.getBatteryStateReceiver(),
     private val batteryStateObserver: BatteryStateObserver = ServiceLocator.getBatteryStateObserver(),
-    private val settingsSrc: SettingsSrc = ServiceLocator.getSettingsSrc(),
-    private val monitoringQueue: BatteryLevelMonitoringTriggerEnqueuer = ServiceLocator.getBatteryLevelMonitoringTriggerEnqueuer(),
+//    private val settingsSrc: SettingsSrc = ServiceLocator.getSettingsSrc(),
+    private val monitoringQueue: PowerConnectionSchedule = ServiceLocator.getBatteryLevelMonitoringTriggerEnqueuer(),
 ) : Service() {
 
     private val serviceScope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
@@ -51,6 +50,7 @@ class BatteryLevelMonitoringService(
                     is ChargeState.ThresholdReached -> {
                         // TODO: launch full screen intent to launch alarm activity
                     }
+
                     is ChargeState.Disconnected -> {
                         // Wait for the next charge cycle, if the user still wants monitoring.
                         monitoringQueue.enqueueTrigger()
@@ -78,7 +78,7 @@ class BatteryLevelMonitoringService(
             // Warm the settings cache first: the sticky BATTERY_CHANGED broadcast is delivered
             // as soon as the receiver registers and is handled without reading from disk.
             serviceScope.launch {
-                settingsSrc.getSettings()
+//                settingsSrc.getSettings()
                 registerReceiver()
                 receiverRegistered = true
             }
@@ -125,3 +125,18 @@ class BatteryLevelMonitoringService(
             .build()
     }
 }
+
+
+/*
+* // Tests:
+* 1. serviceRegisterReceiverOnlyOnce
+* 2. foregroundServiceNotificationIdContainedInActiveNotifications
+* 3. receiverGetsUnregisteredOnServiceDestroy
+* 4. serviceReschedulesWorkManagerOnChargerUnplugged
+* 5. serviceWarmsUpSettingsCacheOnB
+* 6. thresholdIsCheckedOnEveryBatteryStateChange
+* 7. alarmNotificationIsShownOnThreshOldReached
+* 8. serviceIsStoppedOnChargerUnplugged
+* 9. serviceIsStoppedIfUserPressStopOnNotification
+* */
+

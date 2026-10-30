@@ -1,17 +1,18 @@
-package mni.siddique.battery_state_android.usecase
+package mni.siddique.battery_state_android.usecase.batterystate
 
 import android.content.Intent
 
 enum class SystemEvent {
     BATTERY_CHANGED,
-    POWER_DISCONNECTED;
+    POWER_DISCONNECTED,
+    NO_ACTION;
 
     companion object {
-        fun fromIntentAction(action: String): SystemEvent? {
+        fun fromIntentAction(action: String?): SystemEvent {
             return when (action) {
                 Intent.ACTION_BATTERY_CHANGED -> BATTERY_CHANGED
                 Intent.ACTION_POWER_DISCONNECTED -> POWER_DISCONNECTED
-                else -> null
+                else -> NO_ACTION
             }
         }
     }

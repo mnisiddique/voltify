@@ -1,4 +1,4 @@
-package mni.siddique.battery_state_android.usecase
+package mni.siddique.battery_state_android.usecase.batterystate
 
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

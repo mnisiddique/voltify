@@ -4,9 +4,9 @@ import android.content.Context
 import mni.siddique.battery_state_android.service.BatteryStateReceiver
 import mni.siddique.battery_state_android.settings.SettingsSrc
 import mni.siddique.battery_state_android.settings.dataStore
-import mni.siddique.battery_state_android.usecase.BatteryStateObserver
-import mni.siddique.battery_state_android.workmanager.BatteryLevelMonitoringTriggerEnqueuer
-import mni.siddique.battery_state_android.workmanager.BatteryLevelMonitoringTriggerEnqueuerImpl
+import mni.siddique.battery_state_android.usecase.batterystate.BatteryStateObserver
+import mni.siddique.battery_state_android.workmanager.PowerConnectionSchedule
+import mni.siddique.battery_state_android.workmanager.PowerConnectionScheduleImpl
 import androidx.work.WorkManager
 
 object ServiceLocator {
@@ -29,11 +29,11 @@ object ServiceLocator {
         }
     }
 
-    fun getBatteryLevelMonitoringTriggerEnqueuer(): BatteryLevelMonitoringTriggerEnqueuer {
+    fun getBatteryLevelMonitoringTriggerEnqueuer(): PowerConnectionSchedule {
         val appContext = checkNotNull(appContext) {
             "ServiceLocator has not been initialized"
         }
-        return BatteryLevelMonitoringTriggerEnqueuerImpl(WorkManager.getInstance(appContext), getSettingsSrc())
+        return PowerConnectionScheduleImpl(WorkManager.getInstance(appContext), getSettingsSrc())
     }
 
     fun getBatteryStateReceiver(): BatteryStateReceiver {
