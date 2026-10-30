@@ -17,7 +17,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mni.siddique.battery_state_android.ServiceLocator
 import mni.siddique.battery_state_android.StringResource
-import mni.siddique.battery_state_android.usecase.batterystate.ChargeState
 import mni.siddique.battery_state_android.workmanager.PowerConnectionSchedule
 
 class BatteryStateService(
