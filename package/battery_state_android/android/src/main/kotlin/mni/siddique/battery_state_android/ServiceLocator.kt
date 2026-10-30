@@ -4,7 +4,6 @@ import android.content.Context
 import mni.siddique.battery_state_android.service.BatteryStateReceiver
 import mni.siddique.battery_state_android.settings.SettingsSrc
 import mni.siddique.battery_state_android.settings.dataStore
-import mni.siddique.battery_state_android.usecase.batterystate.BatteryStateObserver
 import mni.siddique.battery_state_android.workmanager.PowerConnectionSchedule
 import mni.siddique.battery_state_android.workmanager.PowerConnectionScheduleImpl
 import androidx.work.WorkManager

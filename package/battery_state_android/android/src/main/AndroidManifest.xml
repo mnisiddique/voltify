@@ -7,7 +7,7 @@
 
     <application>
         <service
-            android:name="mni.siddique.battery_state_android.service.BatteryLevelMonitoringService"
+            android:name="mni.siddique.battery_state_android.service.BatteryStateService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse">
