@@ -16,29 +16,48 @@ class ServiceLocator private constructor() {
     @PublishedApi
     internal val typeStack = mutableListOf<KClass<*>>()
 
+
     inline fun <reified T> get(): T {
         val kClass = T::class
+        try {
+            return when {
+                kClass in typeStack -> {
+                    val cycleGraph = (typeStack + kClass).joinToString(
+                        " -> ",
+                        prefix = "[",
+                        postfix = "]"
+                    )
+                    throw IllegalStateException("Circular dependency: $cycleGraph")
+                }
 
-        return when {
-            factory.containsKey(kClass) -> {
-                factory[kClass]!!() as T
+                factory.containsKey(kClass) -> {
+                    typeStack.add(kClass)
+                    factory[kClass]!!() as T
+
+                }
+
+                lazySingletons.containsKey(kClass) -> {
+                    lazySingletons[kClass] as T
+                }
+
+                lazy.containsKey(kClass) -> {
+                    typeStack.add(kClass)
+                    lazySingletons[kClass] = lazy[kClass]!!()
+                    lazySingletons[kClass] as T
+                }
+
+                else -> {
+                    throw IllegalStateException("No registration for type: ${kClass.qualifiedName}")
+                }
             }
-
-            lazySingletons.containsKey(kClass) -> {
-                lazySingletons[kClass] as T
-            }
-
-            lazy.containsKey(kClass) -> {
-                lazySingletons[kClass] = lazy[kClass]!!()
-                lazySingletons[kClass] as T
-            }
-
-            else -> {
-                throw IllegalArgumentException("No registration found for ${kClass.simpleName}")
+        } finally {
+            if (typeStack.isNotEmpty()) {
+                typeStack.removeAt(typeStack.lastIndex)
             }
         }
 
     }
+
 
     inline fun <reified T : Any> registerAsFactory(noinline reg: () -> T) {
         factory[T::class] = reg
